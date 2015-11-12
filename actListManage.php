@@ -17,8 +17,21 @@ if($_SESSION['status']=='User'){
 	<script type="text/javascript" src="jsp/jquery.min.js"></script>
 	<script type="text/javascript" src="jsp/bootstrap.js"></script>
 	<script type="text/javascript">
+	
+	function delShowTime(showtimeId){
+		console.log(showtimeId);
+			$.ajax({
+				url: "deleteShowtime.php",
+				type: 'POST',
+				data: { dataShowTime: showtimeId }
+			}).done(function(result){
+				 var $delShowTime = $('#showtime-' + showtimeId);
+				 
 
-
+				 $delShowTime.css("background-color", "white").empty();
+				 alert("ลบข้อมูลห้องกิจกรรมเรียบร้อย");
+			})
+	}
 
 	 	function getManage(date) {
 
@@ -39,11 +52,12 @@ if($_SESSION['status']=='User'){
 
   					var $tdStartTime = $('#activity-' + showTime.Room_ID + '-' + showTime.StartTimeID);
   					var $tdEndTime =  $('#activity-' + showTime.Room_ID + '-' + showTime.EndTimeID);
-
+  					
   					//console.log($tdStartTime.index(), $tdEndTime.index());
 
-  						$tdStartTime.html($tdStartTime.html() + '<a href=javascript:void(0);>' + showTime.Activity_Name + '     ' +'del</a>');
+  						$tdStartTime.html('<a id="showtime-'+ showTime.Showtime_ID +  '"showTime.Activity_Name href=javascript:void(0) onclick="delShowTime(' + showTime.Showtime_ID + ') ;return false;">' + ' ' + showTime.Activity_Name +'(ลบ)</a>');
 
+  						
   						$tdEndTime.html(showTime.Activity_Name);
 
   						var diff = $tdStartTime.index() - $tdEndTime.index() + 1;
@@ -53,7 +67,7 @@ if($_SESSION['status']=='User'){
 
   						// merge cell
   						var colspan = $tdEndTime.index() - $tdStartTime.index() + 1;
-  						//$tdStartTime.attr('colspan', colspan)
+  						// $tdStartTime.attr('colspan', colspan)
 
   						for (i=$tdEndTime.index(); i <= $tdEndTime.index() + diff; i++) {
   							//$tdEndTime.parent().eq(i).remove();
@@ -104,7 +118,7 @@ if($_SESSION['status']=='User'){
        // $("#content > tbody").html("");
        // $('#content').dataTable().fnClearTable();
 
-$("#content > tbody").find('td:not(:first-child)').css({'background-color': 'white'}).attr('colspan', '').empty();
+		$("#content > tbody").find('td:not(:first-child)').css({'background-color': 'white'}).attr('colspan', '').empty();
 
       		var id = $(this).val();
 
@@ -112,19 +126,21 @@ $("#content > tbody").find('td:not(:first-child)').css({'background-color': 'whi
 
           	getManage(id);
 		});
+     
      var date = new Date();
      console.log(date);
-var day = date.getDate();
-var monthIndex = date.getMonth() + 1;
-var year = date.getFullYear();
 
-
-console.log(day, monthIndex, year);
+	var day = date.getDate();
+	var monthIndex = date.getMonth() + 1;
+	var year = date.getFullYear();
+	console.log(day, monthIndex, year);
+	
 	var datenow = year + '-' + monthIndex + '-' + day;
 	console.log(datenow);
-       //getManage(datenow);
-       getManage("2015-11-10");
-    });
+       
+    getManage(datenow);
+       // getManage("2015-11-10");
+ });
       
 	
 
