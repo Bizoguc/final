@@ -9,24 +9,6 @@ html {
   -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
 }
-
-
-#Content {
-
-  background-color: #fafafa;
-  width:79%;
-  border-radius :1em 1em 0 0;
- 
-
-}
-
-
-.ex {
-  background-color: #e5e5e5;
-  border-radius :0em  1em 1em;
-  
-}
-
 body {
   margin: 0;
 }
@@ -1601,18 +1583,11 @@ pre code {
   overflow-y: scroll;
 }
 .container {
-
-  padding-right: 12px;
+  padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
-
 }
-
-
-
-
-
 @media (min-width: 768px) {
   .container {
     width: 750px;
@@ -2801,8 +2776,6 @@ select[multiple].input-lg {
   font-size: 18px;
   line-height: 1.3333333;
 }
-
-
 .has-feedback {
   position: relative;
 }
@@ -3218,7 +3191,6 @@ fieldset[disabled] .btn-primary.active {
   color: #fff;
   background-color: #5cb85c;
   border-color: #4cae4c;
-
 }
 .btn-success:focus,
 .btn-success.focus {
@@ -6326,7 +6298,6 @@ button.close {
 }
 .carousel-inner > .item > img,
 .carousel-inner > .item > a > img {
-  
   line-height: 1;
 }
 @media all and (transform-3d), (-webkit-transform-3d) {
@@ -6826,4 +6797,4 @@ button.close {
     display: none !important;
   }
 }
-
+/*# sourceMappingURL=bootstrap.css.map */
