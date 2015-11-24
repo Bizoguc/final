@@ -1,16 +1,18 @@
 <?php
 	include("connect.php");
 
-	$id = $_GET['activityId'];
+	$id = $_POST['activityId'];
 
-	// $sql ="SELECT * FROM Showtime WHERE Activity_ID ='".$id."'' ";
+	$sql = mysql_query("SELECT * FROM Showtime WHERE DateShowtime>=(curdate()) AND Activity_ID = '".$id."' ");
 	
-	// $results = array();
-	// while($row = mysql_fetch_assoc($sql)){
-	// 	$results[] = ($row);
-	// }
-	// 	header('Content-type: application/json');
+	$results = array();
+	
+	while($row = mysql_fetch_assoc($sql)){
+
+	$results[] = ($row);
+	}
+
+	header('Content-type: application/json');
  
-	// echo json_encode($results);
-	
+	echo json_encode($results);	
 ?>

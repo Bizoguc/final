@@ -1,208 +1,132 @@
 <?php
-session_start(); ob_start();
-
-if($_SESSION['status']=='User'){
-     header("Location: index.php");
-     exit;
-}else if($_SESSION['status']== null){
-	 header("Location: login.php");
-     exit;
-} 
+	include('checkLogin.php');
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-	<script type="text/javascript" src="jsp/jquery.min.js"></script>
-	<script type="text/javascript" src="jsp/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">	
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+
 	<script type="text/javascript">
-	
-	function delShowTime(showtimeId){
-		console.log(showtimeId);
-			$.ajax({
-				url: "deleteShowtime.php",
-				type: 'POST',
-				data: { dataShowTime: showtimeId }
-			}).done(function(result){
-				 var $delShowTime = $('#showtime-' + showtimeId);
-				 
-
-				 $delShowTime.css("background-color", "white").empty();
-				 alert("ลบข้อมูลห้องกิจกรรมเรียบร้อย");
-			})
-	}
-
-	 	function getManage(date) {
-
-          	$.ajax({ 
-			  url: "getManage.php",
-			  type: 'POST',
-			  data: { dataDate: date }
-			  }).done(function(result) {
-
-			  var date = result;
- 
- 			  console.log(date.length);
-
-			  $.each(date, function( index, showTime ) {
-  					
-
-  					console.log(showTime);
-
-  					var $tdStartTime = $('#activity-' + showTime.Room_ID + '-' + showTime.StartTimeID);
-  					var $tdEndTime =  $('#activity-' + showTime.Room_ID + '-' + showTime.EndTimeID);
-  					
-  					//console.log($tdStartTime.index(), $tdEndTime.index());
-
-  						$tdStartTime.html('<a id="showtime-'+ showTime.Showtime_ID +  '"showTime.Activity_Name href=javascript:void(0) onclick="delShowTime(' + showTime.Showtime_ID + ') ;return false;">' + ' ' + showTime.Activity_Name +'(ลบ)</a>');
-
-  						
-  						$tdEndTime.html(showTime.Activity_Name);
-
-  						var diff = $tdStartTime.index() - $tdEndTime.index() + 1;
-
-  						console.log($tdStartTime.index(), $tdEndTime.index())
-
-
-  						// merge cell
-  						var colspan = $tdEndTime.index() - $tdStartTime.index() + 1;
-  						// $tdStartTime.attr('colspan', colspan)
-
-  						for (i=$tdEndTime.index(); i <= $tdEndTime.index() + diff; i++) {
-  							//$tdEndTime.parent().eq(i).remove();
-  						}
-
-  						// $tdStartTime.attr('href', gg.php) 
-  						// console.log(colspan-1);
-  						// remove cell
-  						console.log(showTime.Activity_Name, $tdStartTime.index(), $tdEndTime.index());
-
-  						for (i=$tdStartTime.index(); i <= $tdEndTime.index(); i++)  {
-  						 	
-
-  							var $row = $('#room-no-' + showTime.Room_ID).parent();
-
-  							//$row.find('td:last').remove();
-  							// console.log($row.html());
-  							//$row.find('td:nth-child(i+1)').remove();
-  							//$row.find('td:nth-child(i+colspan)').remove();
-  						}
-
-  						$tdStartTime.css({
-  							'text-align': 'center',
-  							'background-color':'#EEEEEE',
-  							'color':'#000000',
-  							'font-weight': 'bold',
-
-  						});
-  						// $tdEndTime.html(showTime.Activity_Name + ' E');
-				});
-
- 			
-
-			}).error(function(){
-				console.log("ERROR");
-			});
-	 	}
-
-	 
-
-	 $(document).ready(function () {
-
-       $("#iDate").change(function () {
-
-
-       	// $('#content tbody').empty();
-       	// $('#content tbody').remove();
-       // $("#content > tbody").html("");
-       // $('#content').dataTable().fnClearTable();
-
-		$("#content > tbody").find('td:not(:first-child)').css({'background-color': 'white'}).attr('colspan', '').empty();
-
-      		var id = $(this).val();
-
-          	console.log('Date', id);
-
-          	getManage(id);
-		});
-     
-     var date = new Date();
-     console.log(date);
-
-	var day = date.getDate();
-	var monthIndex = date.getMonth() + 1;
-	var year = date.getFullYear();
-	console.log(day, monthIndex, year);
-	
-	var datenow = year + '-' + monthIndex + '-' + day;
-	console.log(datenow);
-       
-    getManage(datenow);
-       // getManage("2015-11-10");
- });
-      
-	
-
+		<?php require('js/actListManage.js');
+			  require('js/activeNav.js');
+		?>
 	</script>
 	<title>ตารางกิจกรรม</title>
+
 </head>
-<body>
 
-	<form action="listManage.php" method="post">
-	<input type="date" id="iDate" value="<?php echo date('Y-m-d'); ?>">
+ <body>
+	<?php include('css/nav.css');?>
 
-	<table  id="content" class="table table-hover table-bordered" >
-		<thead>
-		<tr>
-			<th>ห้อง/เวลา</th>
+<?php
 
-				<?php
-					include("connect.php");
-					$result = mysql_query("SELECT * FROM Time");
+	$times = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
-					while($row = mysql_fetch_array($result))
-					{?>			
-						<th id="time-<?=$row['Time_ID'];?>"><? echo$row['Time_Name'];?></th>
-			
-					<?}?>
-	
-			
-		</tr>
-		</thead>
+	// foreach ($times as $key => $value) {
+	// 	echo $value.'<br/>'.$key.'<br/>';
+	// }
+?>
+		<div class="container">
+			<div class="col-md-12">
+				 <div class="panel panel-default">
+		            <div class="panel-heading">
+		            	<h4>ตารางวันที่จัดกิจกรรม
+			            	<input type="date" id="iDate" value="<?php echo date('Y-m-d'); ?>">
+			            	<input style="float:right; margin-right:2%;" type="submit" value="เพิ่มห้องกิจกรรม" class="btn btn-success" onclick="window.location.href='manageActivity.php'"  >
+		            	</h4>
+		            </div>	
+
+		            <div class="panel-body">
+						<div class="table-responsive">
+							<table  id="content"  class="table table-hover table-bordered">
+								<thead>
+								<tr>
+									 <th>ห้อง/เวลา</th>
+							         <th id='8'>08.00</th>
+							         <th id='9'>09.00</th>
+							         <th id='10'>10.00</th>
+							         <th id='11'>11.00</th>
+							         <th id='12'>12.00</th>
+							         <th id='13'>13.00</th>
+							         <th id='14'>14.00</th>
+							         <th id='15'>15.00</th>
+							         <th id='16'>16.00</th>
+							         <th id='17'>17.00</th>
+							         <th id='18'>18.00</th>
+							         <th id='19'>19.00</th>
+							         <th id='20'>20.00</th>
+								
+								</tr>
+								</thead>
 
 
+							<tbody>
+								<?php
+									include("connect.php");
+									$result = mysql_query("SELECT * FROM Room");
+									while($row = mysql_fetch_array($result))
+								{?>
 
-			<?php
-				include("connect.php");
-				$result = mysql_query("SELECT * FROM Room");
-				while($row = mysql_fetch_array($result))
-			{?>
+								
+								
+								<tr>
+									<td id="room-no-<?=$row['Room_ID'];?>"><? echo$row['room_name'];?></td>
+									
+									<?php
 
-			
-			<tbody>
-			<tr>
-				<td id="room-no-<?=$row['Room_ID'];?>"><? echo$row['room_name'];?></td>
-				
-				<?php
-					include("connect.php");
-					$timeResult = mysql_query("SELECT * FROM Time");
+										/**for ($i=8; $i <= 20; $i++) {
+										    echo "<td id=activity-<?=$row['Room_ID']?>-".$i."</td>";
+										}**/
 
-					while($timeRow = mysql_fetch_array($timeResult))
-						//ห้องและเวลา
-					{?>			
-					
-						<td id="activity-<?=$row['Room_ID']?>-<?=$timeRow['Time_ID']?>">&nbsp;</td> 
-				
-					<?}?>					
+										include("connect.php");
+										//$timeResult = mysql_query("SELECT * FROM Time");
+										//while($timeRow = mysql_fetch_array($timeResult))
+											//ห้องและเวลา
 
-			</tr>	
-			</tbody>
-			<?}?>
-	
+										
+										$times = array(
+											    "8" => "",
+											    "9" => "",
+											    "10" => "",
+											    "11" => "",
+											    "12" => "",
+											    "13" => "",
+											    "14" => "",
+											    "15" => "",
+											    "16" => "",
+											    "17" => "",
+											    "18" => "",
+											    "19" => "",
+											    "20" => "",
+											);
+										foreach ($times as $key => $value) 
+											//echo $value.'<br/>'.$key.'<br/>';
+									 
+										
 
-</table>
-</form>
-	
+										{?>			
+										
+											<td id="activity-<?=$row['Room_ID']?>-<?=$key?>"></td> 
+									
+										<?}?>					
+
+								</tr>	
+								
+								<?}?>
+							</tbody>
+
+						</table>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 </body>
 </html>

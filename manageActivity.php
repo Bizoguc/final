@@ -1,213 +1,147 @@
-<?php
-session_start(); ob_start();
-
-if($_SESSION['status']=='User'){
-     header("Location: index.php");
-     exit;
-}else if($_SESSION['status']== null){
-   header("Location: login.php");
-     exit;
-}
-?>
+<?php require('checkLogin.php');?>
 
 <html>
 <head>
-  <title>Admin || Program Manage Activity</title>
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">  
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
 
-  <script type="text/javascript" src="jsp/jquery.min.js"></script>
-  <script type="text/javascript" src="jsp/bootstrap.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/listInsert.css">
+  <title>Admin || Program Manage Activity</title>
 
   <script type="text/javascript">
-    $(document).ready(function () {
-       $("#act").change(function () {
-      
-          	
-          	 var id = $(this).val();
-
-          	 console.log('Activity', id);
-
-          	$.ajax({
-			      url: "getActivity.php",
-			      type: 'POST',
-			      data: { activityId: id } //activityId ชื่อค่า : id value ค่า
-			}).done(function(result) {
-			   activity = (JSON.parse(result));
-         $("#room").val("");
-			   $("#activity_name").html(activity.Activity_Name);
-			   $("#activity_quan").val(activity.Activity_Quantity);
-			   $('#activity_hour').val(activity.Activity_Hour);
-			   $("#activity_date").val(activity.Activity_Date);
-			   $('#startActivity').val(activity.Activity_StartTime);
-         $('#endActivity').val(activity.Activity_StartTime);
-
-         console.log(activity.Activity_Hour + activity.Activity_StartTime)
-
-        var hour = parseInt($('#endActivity').val()) + parseInt($('#activity_hour').val())
-        $('#endActivity').val(hour);
-
-			}).error(function(){
-				console.log("ERROR");
-			});
-
-			
-        });
-    });
-</script>
-
-
+    <?php require('js/manageActivity.js');?>
+  </script>
+  
 </head>
 
-<body>
-<!-- โค๊ดเมนู nav -->
-<div class="container">
+  <?php include('css/nav.css');?>
 
-      <nav class="navbar navbar-default">
-        <a class="navbar-brand" href="#">Southeast Asia University</a>
-        <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          
-        <?php 
-    // error_reporting(0);
-          if (isset($_GET['u']) == 'home') {
-          
-              echo "<li class='active'>";
-            }else{
-              echo "<li>";
-          }?>
+  <div class="container-fluid">
+      <div class="container">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <!-- <h1 id="activity_name" value="">กิจกรรม</h1> -->
+              <h4>ห้องกิจกรรม</h4> <small>เลือกกิจกรรมให้ตรงกับห้องที่ต้องการ</small>
+            </div>
 
-            <a href="Home.php">หน้าแรก</a>
-          </li>
-            
+            <div class="panel-body">
 
-          <?php if($_SESSION['status'] == "Admin"){ ?>
+            <form method="post" action="manage.php" class="basic-grey">
+                <?php
+                  include("connect.php");
+                	// $sql = mysql_query("SELECT * FROM Activity WHERE Activity_ID");
+                	// $reuslt = mysql_fetch_assoc($sql);
+                  $sql = "SELECT * from Activity";
+                  $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
+                ?>
 
-            <li class="dropdown">
-            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
-          aria-expanded="false">Program Admin <span class="caret"></span></a>  
+              <div class="form-group">
+                <label>กิจกรรม:</label>
+                <select class="form-control" name='activity' id="act" >;
+                  <option value=''><--กรุณาเลือกกิจกรรม--></option>";
+                    <?php 
+                      while($row = mysql_fetch_assoc($query)){
+                  	  echo "<option value='" . $row['Activity_ID'] . "'>" . $row['Activity_Name'] . "</option>";
+                    }?>
 
-                  <ul class="dropdown-menu">
+                </select>
+              </div>
 
-          
-              <li><a href="actList.php">ลงกิจกรรม</a></li>
+              <div class="form-group">
+                <label>จำนวนที่รับ</label>
+                <input class="form-control" placeholder="เปิดรับ" type="text" value="" name="activity_quan" id="activity_quan"/>
+              </div>
 
-                      <li><a href="manageActivity.php">จัดการเวลาให้ตรงกับห้อง</a></li>
+              <div class="form-group">
+                <label>ระยะเวลากิจกรรม</label>
+                <input class="form-control" placeholder="ชั่วโมง" type="text" value="" name="activity_hour" id="activity_hour" />
+              </div>
 
-                      <li><a href="Home.php">ออกใบรายงาน</a></li>
-                  </ul>
-                </li>
-        
+              
+               
+              <div class="form-group">
+                <label>ห้องจัดกิจกรรม</label>
+                   <select class="form-control" name="room" id="room"><option value=''><--กรุณาเลือกห้อง--></option>;
+                      <?php
+                        $sql = "SELECT * from Room";
+                        $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
+                      ?>
 
-          <? }else{?>
+                      <?php while($row = mysql_fetch_assoc($query)){
+           	              echo "<option value='" . $row['Room_ID'] . "'>" .$row['room_name'] ."</option>";
+                      }?>
+                    </select>
+              </div>
 
+              <div class="form-group">
+                <label>วันที่จัดกิจกรรม</label>
+                <input class="form-control" type="date" value="" name="activity_date" id="activity_date"/>
+              </div>
 
+              <div class="form-group">
+                <label>เริ่มจัดกิจกรรม</label>
 
-          <?php 
-          // if (isset($_GET['u'])) {
-          if (isset($_GET['u']) != null) {
-            if($_GET['u'] == "personal"){
-              echo "<li class='active'>";
-            }else{
-              echo "<li>";
-            }
-          }else{
-              echo "<li>";
-            }
-          ?>
-          <a href="Home.php?u=personal">ประวัติส่วนตัว</a></li>
+                 <select class="form-control" name="startActivity" id="startActivity">
+                  <option value=''>-เริ่ม-</option>
+                     <option value='8'>08:00</option>
+                     <option value='9'>09:00</option>
+                     <option value='10'>10:00</option>
+                     <option value='11'>11:00</option>
+                     <option value='12'>12:00</option>
+                     <option value='13'>13:00</option>
+                     <option value='14'>14:00</option>
+                     <option value='15'>15:00</option>
+                     <option value='16'>16:00</option>
+                     <option value='17'>17:00</option>
+                     <option value='18'>18:00</option>
+                     <option value='19'>19:00</option>
+                     <option value='20'>20:00</option>   
+                 </select> 
 
-          <?php 
-          if (isset($_GET['u']) != null) {
-            if($_GET['u'] == 'register'){
-              echo "<li class='active'>";
-            }else{
-              echo "<li>";
-            }
-          }else{
-              echo "<li>";}
-          ?>
-          <a href="Home.php?u=register">ลงทะเบียนเข้ากิจกรรม</a></li>
+                <label>ถึง</label>
+                   <select class="form-control" name="endActivity" id="endActivity">
+                   <option value=''><-จบ-></option>
+                    <option value='8'>08:00</option>
+                     <option value='9'>09:00</option>
+                     <option value='10'>10:00</option>
+                     <option value='11'>11:00</option>
+                     <option value='12'>12:00</option>
+                     <option value='13'>13:00</option>
+                     <option value='14'>14:00</option>
+                     <option value='15'>15:00</option>
+                     <option value='16'>16:00</option>
+                     <option value='17'>17:00</option>
+                     <option value='18'>18:00</option>
+                     <option value='19'>19:00</option>
+                     <option value='20'>20:00</option>   
+                 </select>
+                </div>
+               <input type="submit" name="send" class="btn btn-success"value="ยืนยัน">  <input type="reset" class="btn btn-danger" value="คืนค่า">
+        </form>
 
-        <?}?>
+      </div>
+    </div>
+  </div>
 
-            <li><a href="logout.php">ออกจากระบบ</a></li>
+              <div class="col-md-6"> 
+              <div class="panel panel-default">
+               <div class="panel-heading"><h3>ขั้นตอนการเพิ่มห้องกิจกรรม </h3></div>
+                  <div class="panel-body">
+                    <p>1.เลือกกิจกรรมที่ต้องการจัด</p>
+                       
+                    <p>2.กรอกข้อมูลให้ครบถ้วน</p>
+                    <p>3.กดปุ่มยืนยัน</p>
+                    <p style="color:red"> *ไม่สามารถเพิ่มห้องกิจกรรมติดต่อกันได้ ต้องเว้นระยะเวลาห้องที่จัดกิจกรรมอย่างน้อย 1 ชั่วโมง*</p>
 
+                    </p>
+                </div>
 
-        
-        </ul>
-      </nav>
+              </div>
+            </div>
+  </div>
 </div>
 
-<!-- โค๊ดเมนู nav -->
-
-
-
-<div class="container">
-
-  <form method="post" action="manage.php" class="basic-grey">
-      <?php
-        include("connect.php");
-      	// $sql = mysql_query("SELECT * FROM Activity WHERE Activity_ID");
-      	// $reuslt = mysql_fetch_assoc($sql);
-        $sql = "SELECT * from Activity";
-        $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
-      ?>
-
-      <!-- <h1 id="activity_name" value="">กิจกรรม</h1> -->
-      <h1> จัดการกิจกรรมให้ตรงห้องต่างๆ</h1>
-        <select name='activity' id="act" >;
-        <option value=''><--กรุณาเลือกกิจกรรม--></option>";
-
-        <?php 
-          while($row = mysql_fetch_assoc($query)){
-      	  echo "<option value='" . $row['Activity_ID'] . "'>" . $row['Activity_Name'] . "</option>";
-        }?>
-
-        </select>
-
-        <label>จำนวนที่เปิดรับ</label><input type="text" value="" name="activity_quan" id="activity_quan"/><br>
-        <label>จำนวนชั่วโมงกิจกรรม</label><input type="text" value="" name="activity_hour" id="activity_hour" /><br>
-        <label​>ห้องจัดกิจกรรม</label​><br>
-
-           <select name="room" id="room"><option value=''><--กรุณาเลือกห้อง--></option>;
-              <?php
-                $sql = "SELECT * from Room";
-                $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
-              ?>
-
-              <?php while($row = mysql_fetch_assoc($query)){
-   	              echo "<option value='" . $row['Room_ID'] . "'>" .$row['room_name'] ."</option>";
-              }?>
-            </select><br>
-        <label>วันที่จัดกิจกรรม</label><input type="date" value="" name="activity_date" id="activity_date"/><br><br>
-        <label>เริ่มจัดกิจกรรม</label>
-
-           <select name="startActivity" id="startActivity">
-           <option value=''><-เริ่ม-></option>
-
-               <?php
-                  $sql = "SELECT * from Time";
-                  $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
-                  while($row = mysql_fetch_assoc($query)){
-                        echo "<option value='" . $row['Time_ID'] . "'>" .$row['Time_Name'] ."</option>";
-                }?>
-
-           </select> 
-
-        <label>ถึง</label>
-            <select name="endActivity" id="endActivity">
-            <option value=''><-จบ-></option>
-
-                <?php
-                    $sql = "SELECT * from Time";
-                    $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
-                    while($row = mysql_fetch_assoc($query)){
-                         echo "<option value='" . $row['Time_ID'] . "'>" .$row['Time_Name'] ."</option>";
-                }?>
-
-            </select><br>
-       <input type="submit" name="send" class="btn btn-success"value="ยืนยัน">  <input type="reset" class="btn btn-danger" value="คืนค่า">
-</form>
 </body>
 </html>

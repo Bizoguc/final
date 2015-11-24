@@ -19,7 +19,7 @@ if($_SESSION['status']=='User'){
 	date_default_timezone_set('Asia/Bangkok');
 	
 	$sql="UPDATE Activity SET Activity_Name = '".$_POST["Name"]."',Activity_Detail ='".$_POST["Detail"]."'
-	,Activity_Date ='".$_POST["Date"]."',Activity_StartTime ='".$_POST["startActivity"]."' 
+	,Activity_Date ='".$_POST["Date"]."',Activity_StartTime ='".$_POST["Time"]."' 
 	,Activity_Hour='".$_POST["Hour"]."',Activity_Quantity ='".$_POST["Quan"]."',Type_ID='".$_POST["typeActivity"]."'
 	,RegisDate='".$RegisDate->format('Y-m-d H:i:s')."'
 	WHERE Activity_ID ='".$_GET['u']."'";

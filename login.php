@@ -4,8 +4,9 @@
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="css/login.css">
-<title> Login</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<title> Login</title>
 </head>
 <body >
 
@@ -58,14 +59,15 @@
 
 	?>
 
-<div id="wrapper">
+<div class="container">
 
-<form name="login-form" class="login-form" method="post" action="">
+<form method="post" action="">
 	<div class="header">
 
 	<h1>เข้าสู่ระบบ</h1>
 	<span>เพื่อลงทะเบียนกิจกรรมต่างๆของมหาวิทยาลัยเอเชียอาคเนย์</span>
 	</div>
+
 	<div class="content">
 	
 
@@ -74,14 +76,14 @@
 		
 	
 		<input type="password" id="pass" name="pass" class="input password" placeholder="รหัสบัตรประชาชน"/>
-		<div class="pass-icon"></div>		
+		<div class="pass-icon"></div><br>
 		</div>
 
    		 <div class="footer">
-   		 <input type="submit" name="send" class="button" value="เข้าสู่ระบบ..."/>
+   		 <input type="submit" name="send" class="btn btn-default" value="เข้าสู่ระบบ..."/>
    	
-   		 </form>
-   		 </div>
-   		 <div class="gradient"></div>
+</form>
+   		
+   		 
 </body>
 </html>

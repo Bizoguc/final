@@ -27,8 +27,8 @@ if (isset($_POST['send']) != null) {
         echo "กรุณากรอกข้อมูล";
         
     } else if($start>$end || $start==$end){
-    	echo "กรอกใหม่";
-    
+    	echo "กรอกใหม่"."<br>";
+        var_dump($date, $room, $start, $end);
         }else{
         var_dump($date, $room, $start, $end);
         
@@ -42,13 +42,15 @@ if (isset($_POST['send']) != null) {
              
             // check start time of activity     
             while ($showTime = mysql_fetch_array($showTimes)) {
+                   // if ($start >= $showTime['StartTimeID'] && $start < $showTime['EndTimeID']) {
                   
-                if ($start >= $showTime['StartTimeID'] && $start < $showTime['EndTimeID']) {
+                if ($start >= $showTime['StartTimeID'] && $start <= $showTime['EndTimeID']) {
                     echo 'start Room busy';
                     exit();
                 } 
-
-                if ($end > $showTime['StartTimeID'] && $end <= $showTime['EndTimeID']) {
+                    // if ($end > $showTime['StartTimeID'] && $end <= $showTime['EndTimeID']) {
+                
+                if ($end >= $showTime['StartTimeID'] && $end <= $showTime['EndTimeID']) {
                     echo 'end Room busy';
                     exit();
                 } 
@@ -59,7 +61,7 @@ if (isset($_POST['send']) != null) {
                 } 
 
                 // if ($start == $showTime['StartTimeID'] && $end == $showTime['EndTimeID']) {
-                //     echo ' ffRoom busy';
+                //     echo 'Room busy';
                 //     exit();
                 // } 
 

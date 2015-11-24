@@ -1,5 +1,5 @@
 <?php
-session_start(); ob_start();
+session_start(); ob_start();	
 
 
 if($_SESSION['status']=='User'){
@@ -21,7 +21,7 @@ include("connect.php");
 // $_POST['dataDate'] = '2015-12-1';
 
 $date = $_POST['dataDate'];
-$sql = mysql_query("SELECT * FROM `Showtime` INNER JOIN Activity on Showtime.Activity_ID = Activity.Activity_ID INNER JOIN Time on Showtime.StartTimeID = Time.Time_ID 
+$sql = mysql_query("SELECT * FROM `Showtime` INNER JOIN Activity on Showtime.Activity_ID = Activity.Activity_ID
 	   INNER JOIN Room ON Showtime.Room_ID = Room.Room_ID  WHERE DateShowtime ='".$date."' ");
 
 // $sql = mysql_query("SELECT * FROM Showtime WHERE DateShowtime ='".$date."' ");
@@ -30,8 +30,10 @@ $sql = mysql_query("SELECT * FROM `Showtime` INNER JOIN Activity on Showtime.Act
 
  $results = array();
 while($row = mysql_fetch_assoc($sql)){
-	$results[] = ($row);
+
+$results[] = ($row);
 }
+
 header('Content-type: application/json');
  
 echo json_encode($results);
