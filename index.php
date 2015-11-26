@@ -12,17 +12,26 @@ session_start(); ob_start();
 
 <!doctype html>
 <html>
+
 	<head>
+
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">	
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.js"></script>
+
+		<script type="text/javascript">
+			<?php require('js/activeNav.js');?>
+		</script>
+
 		<title>Index | Student</title>
+
 	</head>
 
 	<body>
 		
 	<?php include('css/nav.css');?>
+	
 		<div class="container-fluid" >
 
 			<div class="container" >

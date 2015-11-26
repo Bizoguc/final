@@ -35,6 +35,8 @@ if($_SESSION['status']=='User'){
   <?php
     include("css/nav.css");
   	include("connect.php");
+
+   
   ?>
 
     <div class="container-fluid">

@@ -21,11 +21,67 @@ if($_SESSION['status']=='User'){
 		<script type="text/javascript" src="js/bootstrap.js"></script>
 		
 			<script type="text/javascript">
+
 				<?php 
 					  require('js/activeNav.js');
+
 				?>
-			</script>
-			
+
+				function editActivity(activityId) {
+   				 	//$.get("ActListUpdate.php");
+   				 	window.location = "actListUpdate.php?id=" +activityId;
+    				//return false;
+				}
+
+				function delActivity(activityId) {
+   				 	//$.get("ActListUpdate.php");
+   				 	window.location = "actList.php?id="+activityId+"&act=del";
+    				//return false;
+				}
+
+				
+
+
+				$(document).ready(function() {
+				$('input[type=radio][id=facultyCheck]').change(function() {
+   					
+   					var id = $(this).val();
+             	    console.log('faculty', id);
+
+             	    $.ajax({ 
+		            url: "getFacultyAct.php",
+		            type: 'POST',
+		            data: { faculty: id } //ค่าแรกคือค่าที่ส่งไปอีกหน้า : คือค่าที่จะส่งไป หน้านี้นี่เอง
+		            }).done(function(result) {
+
+		            var id = result;
+     				console.log(id.length);
+
+		             $("#listAct > tbody").find('td').css({'background-color': 'white'}).attr('colspan', '').empty();
+					 $('#listAct tbody tr').remove();
+		             $.each(id, function( index, listAct ) {
+
+		             	 //$("#dtd").html(listAct.Activity_Name);
+                  		$('#listAct tbody').append('<tr>'+ 
+                  			'<td>' + listAct.Activity_Name +  '</td>'+
+                  			'<td>' + listAct.Activity_Detail +  '</td>'+
+                  			'<td>' + listAct.Activity_Date +  '</td>'+
+                  			'<td>' + listAct.Activity_StartTime +  '</td>'+
+                  			'<td>' + listAct.Activity_Hour +  '</td>'+
+                  			'<td>' + listAct.Activity_Quantity +  '</td>'+
+                  			'<td>' + listAct.Type_Name +  '</td>'+
+                  			'<td>' + listAct.Faculty_Name +  '</td>'+
+                  			'<td><button class="btn btn-warning"   onclick="editActivity('+ listAct.Activity_ID + ')" >แก้ไข</button>  <button class="btn btn-danger"  onclick="delActivity('+ listAct.Activity_ID + ')">ลบ</button></td>'+
+
+                  			'</tr>');
+                  		
+		             });
+			    });
+	        });
+		});
+		      
+	</script>
+
 		<title>Index | Student</title>
 	</head>
 
@@ -38,7 +94,7 @@ if($_SESSION['status']=='User'){
 			include("connect.php");
 
 			if(isset($_GET['act'])){
-				$sql = ("delete FROM Activity WHERE Activity_ID='".$_GET["u"]."' ");
+				$sql = ("delete FROM Activity WHERE Activity_ID='".$_GET["id"]."' ");
 			
 				if (mysql_query($sql) == TRUE) {
 						echo "<div class='container'>";
@@ -58,13 +114,22 @@ if($_SESSION['status']=='User'){
 				 <div class="panel panel-default">
 		            <div class="panel-heading">
 		            	<h3>รายชื่อกิจกรรม
+		            	
 		            	<input style="float:right; margin-right:2%;" type='button' class="btn btn-success " value='เพิ่มกิจกรรม' id='addButton' onclick="window.location.href='ActListInsert.php'">
 		            	</h3>
+
+							  <input type="radio" id="facultyCheck" name="facultyCheck" value="1"> บริหารธุรกิจ
+							  <input type="radio" id="facultyCheck" name="facultyCheck" value="2"> วิศวกรรมศาสตร์
+							  <input type="radio" id="facultyCheck" name="facultyCheck" value="3"> นิติศาสตร์
+							  <input type="radio" id="facultyCheck" name="facultyCheck" value="4"> ศิลปศาสตร์และวิทยาศาสตร์
+							     
+							 
+						
 		            </div>	
 		            	        
 					<div class="panel-body">
 						<div class="table-responsive">
-							<table  class="table table-hover table-bordered" >
+							<table id="listAct" class="table table-hover table-bordered" >
 							<thead>
 								<tr>
 									
@@ -80,6 +145,7 @@ if($_SESSION['status']=='User'){
 									
 								</tr>
 							</thead>
+							<tbody>
 
 		<?php
 			include("connect.php");
@@ -91,13 +157,14 @@ if($_SESSION['status']=='User'){
 
 			// var_dump($result);
 			// exit();
+
 			while($row = mysql_fetch_array($result))
 				{?>
-				<tbody>
+				
 				<tr>
 
 
-					<td ><? echo$row['Activity_Name'];?></td>
+					<td id='dtd'><? echo$row['Activity_Name'];?></td>
 					<td ><? echo$row['Activity_Detail'];?></td>
 					<td ><? echo date('d M Y',strtotime($row['Activity_Date']));?></td>
 					<!-- <td ><? echo date('H.i',strtotime($row['Activity_StartTime']));?></td> -->
@@ -109,14 +176,15 @@ if($_SESSION['status']=='User'){
 			
 					<td>
 					
-					  <button class="btn btn-warning" onclick="window.location.href='ActListUpdate.php?u=<?=$row["Activity_ID"]?>'">แก้ไข</a> </button> 
-				      <button class="btn btn-danger" onclick="window.location.href='?u=<?=$row["Activity_ID"]?>&act=del'">ลบ</a> </button>
+					  <button class="btn btn-warning" onclick="window.location.href='ActListUpdate.php?id=<?=$row["Activity_ID"]?>'">แก้ไข</a> </button> 
+				      <button class="btn btn-danger" onclick="window.location.href='?id=<?=$row["Activity_ID"]?>&act=del'">ลบ</a> </button>
 						
 					</td>
 
 					</tr>
-					</tbody>
+				
 				<?}?>
+					</tbody>
 				</table>
 					
 				

@@ -31,19 +31,21 @@
 				}else if ($row['Status'] == "0"){
 				$_SESSION['status'] = "User"; 
 			}
-					// var_dump($row);
-					// exit();	
+					
 			if($num > 0){
 
-				$query = "SELECT * FROM Login WHERE Student_Username = '".$user."' ";	
-				$query = mysql_query($query);
-				$num = mysql_num_rows($query);
+				$sql = "SELECT * FROM Student WHERE Student_Username = '".$user."' ";	
+				$query = mysql_query($sql);
+				$row = mysql_fetch_array($query);
+				
 
-						if($num > 0 ){
+						if($row['LogIn'] == "1" ){
 							// mysql_query("DELETE FROM Login WHERE unix_timestamp( ) - Logtime > 60 ");
 							echo "มีการ Login ซ้ำ";
+						
 						}else{
-							$sql = "INSERT INTO Login(Student_Username,Logtime) VALUES('".$user."',NOW())";
+
+							$sql = "UPDATE Student SET LogIn='1',LogTime=now() WHERE Student_Username='".$user."'";
 							$query = mysql_query($sql);
 								if($query){
 
@@ -52,7 +54,7 @@
 								}
 						}
 				}else{
-					echo "ไม่มีชื่อผู้ใช้นี้";
+					echo "กรุณาตรวจสอบไอดีผู้ใช้ใหม่";
 				}
 		}
 	}

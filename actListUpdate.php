@@ -27,8 +27,9 @@ if($_SESSION['status']=='User'){
 		<?php include('css/nav.css');?>
 
 			<?php
+			 	$id = $_GET['id'];
 				include("connect.php");
-				$sql = mysql_query("SELECT * FROM Activity INNER JOIN Type ON Activity.Type_ID = Type.Type_ID WHERE Activity_ID='".$_GET["u"]."' ");
+				$sql = mysql_query("SELECT * FROM Activity INNER JOIN Type ON Activity.Type_ID = Type.Type_ID WHERE Activity_ID='".$_GET["id"]."' ");
 				$row = mysql_fetch_assoc($sql);
 				//var_dump($row);
 			?>
@@ -52,7 +53,7 @@ if($_SESSION['status']=='User'){
 
 									<div class="form-group">
 										<label>รายละเอียดกิจกรรม:</label>
-										<textarea class="form-control" name="Detail" row="5" cols="50" value="<?=$row['Activity_Detail']?>"></textarea>
+										<textarea class="form-control" name="Detail" row="5" cols="50"><?=$row['Activity_Detail']?></textarea>
 									</div>
 
 									<div class="form-group">	

@@ -21,6 +21,7 @@ include("connect.php");
 // $_POST['dataDate'] = '2015-12-1';
 
 $date = $_POST['dataDate'];
+
 $sql = mysql_query("SELECT * FROM `Showtime` INNER JOIN Activity on Showtime.Activity_ID = Activity.Activity_ID
 	   INNER JOIN Room ON Showtime.Room_ID = Room.Room_ID  WHERE DateShowtime ='".$date."' ");
 
@@ -28,7 +29,7 @@ $sql = mysql_query("SELECT * FROM `Showtime` INNER JOIN Activity on Showtime.Act
 // $row = mysql_fetch_assoc($sql);
  
 
- $results = array();
+$results = array();
 while($row = mysql_fetch_assoc($sql)){
 
 $results[] = ($row);

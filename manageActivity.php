@@ -28,7 +28,7 @@
 
             <div class="panel-body">
 
-            <form method="post" action="manage.php" class="basic-grey">
+            <form method="post" action="manage.php">
                 <?php
                   include("connect.php");
                 	// $sql = mysql_query("SELECT * FROM Activity WHERE Activity_ID");
@@ -40,7 +40,7 @@
               <div class="form-group">
                 <label>กิจกรรม:</label>
                 <select class="form-control" name='activity' id="act" >;
-                  <option value=''><--กรุณาเลือกกิจกรรม--></option>";
+                  <option value=''>-กรุณาเลือกกิจกรรม-</option>";
                     <?php 
                       while($row = mysql_fetch_assoc($query)){
                   	  echo "<option value='" . $row['Activity_ID'] . "'>" . $row['Activity_Name'] . "</option>";
@@ -102,7 +102,7 @@
 
                 <label>ถึง</label>
                    <select class="form-control" name="endActivity" id="endActivity">
-                   <option value=''><-จบ-></option>
+                   <option value=''>-จบ-</option>
                     <option value='8'>08:00</option>
                      <option value='9'>09:00</option>
                      <option value='10'>10:00</option>
@@ -133,7 +133,7 @@
                        
                     <p>2.กรอกข้อมูลให้ครบถ้วน</p>
                     <p>3.กดปุ่มยืนยัน</p>
-                    <p style="color:red"> *ไม่สามารถเพิ่มห้องกิจกรรมติดต่อกันได้ ต้องเว้นระยะเวลาห้องที่จัดกิจกรรมอย่างน้อย 1 ชั่วโมง*</p>
+                    <p style="color:red"> *ไม่สามารถเพิ่มห้องกิจกรรมติดต่อกันได้ ต้องเว้นระยะเวลาห้องที่จัดกิจกรรมอย่างน้อย 1 ชั่วโมง เพื่อที่จะเคลียร์นักศึกษาและจัดเตรียมห้องใหม่ในกิจกรรมถัดไป*</p>
 
                     </p>
                 </div>
