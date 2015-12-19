@@ -1,16 +1,7 @@
 <?php
-session_start(); ob_start();
-
-
-if($_SESSION['status']=='User'){
-     header("Location: index.php");
-     exit;
-}else if($_SESSION['status']== null){
-   header("Location: login.php");
-     exit;
-}
- 
+ require 'checkAdminLogin.php';
 ?>
+
 
 <!doctype html>
 <html>
@@ -21,11 +12,16 @@ if($_SESSION['status']=='User'){
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">  
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
-    
+
+
+  
     <script type="text/javascript">
         <?php 
             require('js/activeNav.js');
+            require('js/checkValidateTextbox.js')
         ?>
+
+
       </script>
 
   </head>
@@ -52,24 +48,24 @@ if($_SESSION['status']=='User'){
                   <form action="ActInsert.php" method="post" >
 
                     <div class="form-group">
-                		   <label>ชื่อกิจกรรม:</label>
-                       <input class="form-control" name="Name" type="text" id="Name" placeholder="กิจกรรม">       
+                		   <label>ชื่อกิจกรรม</label>
+                       <input class="form-control" name="Name" type="text" id="Name" placeholder="กิจกรรม" maxlength="40">       
                     </div>
 
                     <div class="form-group">
-                		  <label>รายละเอียดกิจกรรม:</label>
-                      <textarea class="form-control" name="Detail" row="5" cols="50" placeholder="รายละเอียด"></textarea>
+                		  <label>รายละเอียดกิจกรรม</label>
+                      <textarea class="form-control" name="Detail" id="Detail" row="5" cols="50" placeholder="รายละเอียด" maxlength="80"></textarea>
                     </div>
                 		
                     <div class="form-group">
-                      <label>วันที่:</label>
+                      <label>วันที่</label>
                       <input class="form-control" name="Date" type="date" id="Date" value="">
                 		</div>
 
                      <div class="form-group">
                       <label>เริ่มจัดกิจกรรม</label><!-- <input type="text" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="Time" name="Time" />  -->
-                  			 <select  class="form-control" name="Time" id="Time">
-                  		   <option value=''>-เริ่ม-</option>
+                  			 <select  class="form-control" name="startActivity" id="startActivity">
+                  		   <option value=>-เริ่ม-</option>
                                <option value='8'>08:00</option>
                                <option value='9'>09:00</option>
                                <option value='10'>10:00</option>
@@ -80,20 +76,25 @@ if($_SESSION['status']=='User'){
                                <option value='15'>15:00</option>
                                <option value='16'>16:00</option>
                                <option value='17'>17:00</option>
-                               <option value='18'>18:00</option>
-                               <option value='19'>19:00</option>
-                               <option value='20'>20:00</option>   
+                               <option value='18'>18:00</option>  
                            </select> 
                       </div>
                 		
                     <div class="form-group">
-                		  <label>ระยะเวลากิจกรรม :</label>
-                      <input class="form-control" name="Hour" type="text" id="Hour" placeholder="ชั่วโมง">
+                		  <label>ระยะเวลากิจกรรม </label>
+                       <select  class="form-control" name="Hour" id="Hour">
+                         <option value=>-ชั่วโมง-</option>
+                               <option value='1'>1 ชั่วโมง</option>
+                               <option value='2'>2 ชั่วโมง</option>
+                               <option value='3'>3 ชั่วโมง</option>
+                               <option value='4'>4 ชั่วโมง</option>
+                               <option value='5'>5 ชั่วโมง</option>
+                           </select> 
                     </div>
 
                     <div class="form-group">
-                		  <label>จำนวนที่รับ:</label>
-                      <input class="form-control" name="Quan" type="text" id="Quan" placeholder="เปิดรับ">
+                		  <label>จำนวนที่รับ</label>
+                      <input type="number"  maxlenght="2" class="form-control" name="Quan" id="Quan" placeholder="เปิดรับ">
                 		</div>
 
                     <div class="form-group">
@@ -102,8 +103,8 @@ if($_SESSION['status']=='User'){
                              <option value=''>-คณะ-</option>
                             <?php
                               $sql = "SELECT * FROM Faculty";
-                              $query = mysql_query($sql);
-                                while($row=mysql_fetch_assoc($query)){
+                              $query = $conn->query($sql) or printf("Error in query: %s\n",$conn->error);
+                                while($row=$query->fetch_assoc()){
                                   echo "<option value='" . $row['Faculty_ID'] . "'>" .$row['Faculty_Name'] ."</option>";
                                 }
                             ?>
@@ -111,22 +112,22 @@ if($_SESSION['status']=='User'){
                     </div>
 
                     <div class="form-group">
-                			<label>ประเภทกิจกรรม:</label>   
+                			<label>ประเภทกิจกรรม</label>   
                 				<select class="form-control" name="typeActivity" id="typeActivity">
                 			    <option value=''>-ประเภท-</option>
                 			        <?php
 
                 			        $sql = "SELECT * from Type";
-                			        $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
+                			        $query = $conn->query($sql)or printf ("Error in query:  %s\n ",$conn->error); //query ข้อมูล
                 			        
-                			          while($row = mysql_fetch_assoc($query)){
+                			          while($row = $query->fetch_assoc()){
                 			          echo "<option value='" . $row['Type_ID'] . "'>" .$row['Type_Name'] ."</option>";
                 			        }?>
                   				 </select>
                     </div>
 
                     <div class="form-group">
-                		  <input type="Submit" value="ลงกิจกรรม" class="btn btn-success"> 
+                		  <input type="Submit" value="ลงกิจกรรม" id="sendActivity" class="btn btn-success"> 
                       <input type="Reset" value="คืนค่า" class="btn btn-danger">
                     </div>
                  </form>

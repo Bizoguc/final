@@ -1,9 +1,8 @@
-
 <?php
 
 session_start(); ob_start(); 
 // เช็คว่า User ได้ผ่านการ Login มาหรือไม่ 
-	if (!isset($_SESSION['user'])) {
+	if ($_SESSION['user']== null) {
 	     header("Location: login.php");
 	     exit;
 }

@@ -3,5 +3,5 @@
 	
 	$id = $_POST['dataShowTime'];
 
-	$sql = mysql_query("DELETE FROM Showtime where Showtime_ID ='".$id."'");
+	$sql = $conn->query("DELETE FROM Showtime where Showtime_ID ='".$id."'");
 ?>

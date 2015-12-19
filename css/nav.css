@@ -20,11 +20,11 @@
 						<li><a href="importstudent.php">Import Student</a></li>
 						<li><a href="actlist.php">Manage Activity</a></li>
 						<li><a href="actlistManage.php">Manage Showtime</a></li>
-						<li><a href="index.php?u=report">Report</a></li>
+						<li><a href="reportRegister.php">Report</a></li>
 									
 					<? }else{?>
 
-						<li><a href="index.php?u=personal">Personal</a></li>
+						<li><a href="personal.php">Personal</a></li>
 						<li><a href="registerList.php">Register Activity</a></li>
 
 					<?}?>

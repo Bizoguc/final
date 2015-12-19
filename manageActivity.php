@@ -1,4 +1,4 @@
-<?php require('checkLogin.php');?>
+<?php require('checkAdminLogin.php');?>
 
 <html>
 <head>
@@ -11,6 +11,16 @@
 
   <script type="text/javascript">
     <?php require('js/manageActivity.js');?>
+
+      $(document).ready(function(){
+        $('#activity_quan').keyup(function(){
+            if ($(this).val() >= 60){
+              alert('สูงสุด 60 ที่นั่ง');
+              $(this).val('60');
+            }
+          });
+        });
+
   </script>
   
 </head>
@@ -34,15 +44,15 @@
                 	// $sql = mysql_query("SELECT * FROM Activity WHERE Activity_ID");
                 	// $reuslt = mysql_fetch_assoc($sql);
                   $sql = "SELECT * from Activity";
-                  $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
+                  $query = $conn->query($sql)or printf ("Error in query:%s\n",$conn->error); //query ข้อมูล
                 ?>
 
               <div class="form-group">
                 <label>กิจกรรม:</label>
-                <select class="form-control" name='activity' id="act" >;
+                <select class="form-control" name='activity' id="activity" >;
                   <option value=''>-กรุณาเลือกกิจกรรม-</option>";
                     <?php 
-                      while($row = mysql_fetch_assoc($query)){
+                      while($row = $query->fetch_assoc()){
                   	  echo "<option value='" . $row['Activity_ID'] . "'>" . $row['Activity_Name'] . "</option>";
                     }?>
 
@@ -53,23 +63,16 @@
                 <label>จำนวนที่รับ</label>
                 <input class="form-control" placeholder="เปิดรับ" type="text" value="" name="activity_quan" id="activity_quan"/>
               </div>
-
-              <div class="form-group">
-                <label>ระยะเวลากิจกรรม</label>
-                <input class="form-control" placeholder="ชั่วโมง" type="text" value="" name="activity_hour" id="activity_hour" />
-              </div>
-
-              
-               
+      
               <div class="form-group">
                 <label>ห้องจัดกิจกรรม</label>
                    <select class="form-control" name="room" id="room"><option value=''><--กรุณาเลือกห้อง--></option>;
                       <?php
                         $sql = "SELECT * from Room";
-                        $query = mysql_query($sql)or die ("Error in query: . ".mysql_error());; //query ข้อมูล
+                        $query = $conn->query($sql)or printf ("Error in query:  ",$conn->error); //query ข้อมูล
                       ?>
 
-                      <?php while($row = mysql_fetch_assoc($query)){
+                      <?php while($row = $query->fetch_assoc()){
            	              echo "<option value='" . $row['Room_ID'] . "'>" .$row['room_name'] ."</option>";
                       }?>
                     </select>
@@ -95,9 +98,8 @@
                      <option value='15'>15:00</option>
                      <option value='16'>16:00</option>
                      <option value='17'>17:00</option>
-                     <option value='18'>18:00</option>
-                     <option value='19'>19:00</option>
-                     <option value='20'>20:00</option>   
+                
+                 
                  </select> 
 
                 <label>ถึง</label>
@@ -114,8 +116,7 @@
                      <option value='16'>16:00</option>
                      <option value='17'>17:00</option>
                      <option value='18'>18:00</option>
-                     <option value='19'>19:00</option>
-                     <option value='20'>20:00</option>   
+                  
                  </select>
                 </div>
                <input type="submit" name="send" class="btn btn-success"value="ยืนยัน">  <input type="reset" class="btn btn-danger" value="คืนค่า">
@@ -133,15 +134,14 @@
                        
                     <p>2.กรอกข้อมูลให้ครบถ้วน</p>
                     <p>3.กดปุ่มยืนยัน</p>
-                    <p style="color:red"> *ไม่สามารถเพิ่มห้องกิจกรรมติดต่อกันได้ ต้องเว้นระยะเวลาห้องที่จัดกิจกรรมอย่างน้อย 1 ชั่วโมง เพื่อที่จะเคลียร์นักศึกษาและจัดเตรียมห้องใหม่ในกิจกรรมถัดไป*</p>
-
+                    
                     </p>
-                </div>
-
-              </div>
+                  </div>
+               </div>
             </div>
-  </div>
+            </div>
 </div>
 
+<? $conn->close()?>
 </body>
 </html>

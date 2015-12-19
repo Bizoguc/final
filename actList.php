@@ -1,15 +1,5 @@
 <?php
-session_start(); ob_start();
-
-
-if($_SESSION['status']=='User'){
-     header("Location: index.php");
-     exit;
-}else if($_SESSION['status']== null){
-	 header("Location: login.php");
-     exit;
-}
- 
+ require 'checkAdminLogin.php';
 ?>
 
 <!doctype html>
@@ -39,16 +29,8 @@ if($_SESSION['status']=='User'){
     				//return false;
 				}
 
-				
-
-
-				$(document).ready(function() {
-				$('input[type=radio][id=facultyCheck]').change(function() {
-   					
-   					var id = $(this).val();
-             	    console.log('faculty', id);
-
-             	    $.ajax({ 
+				function showFacultyActivity(id){
+					$.ajax({ 
 		            url: "getFacultyAct.php",
 		            type: 'POST',
 		            data: { faculty: id } //ค่าแรกคือค่าที่ส่งไปอีกหน้า : คือค่าที่จะส่งไป หน้านี้นี่เอง
@@ -57,28 +39,46 @@ if($_SESSION['status']=='User'){
 		            var id = result;
      				console.log(id.length);
 
-		             $("#listAct > tbody").find('td').css({'background-color': 'white'}).attr('colspan', '').empty();
+		             // $("#listAct > tbody").find('td').css({'background-color': 'white'}).attr('colspan', '').empty();
 					 $('#listAct tbody tr').remove();
 		             $.each(id, function( index, listAct ) {
+
+
+					    		  var d = new Date(listAct.Activity_Date);  
+								  var day = d.getDate();//day
+								  var month = d.getMonth()+1;   //month
+								  var year = d.getFullYear();   //year
+								  var dateActivity = day + "/" + month + "/" + year;
+					    		  
+					    		  
 
 		             	 //$("#dtd").html(listAct.Activity_Name);
                   		$('#listAct tbody').append('<tr>'+ 
                   			'<td>' + listAct.Activity_Name +  '</td>'+
                   			'<td>' + listAct.Activity_Detail +  '</td>'+
-                  			'<td>' + listAct.Activity_Date +  '</td>'+
+                  			'<td>' + dateActivity +  '</td>'+
                   			'<td>' + listAct.Activity_StartTime +  '</td>'+
                   			'<td>' + listAct.Activity_Hour +  '</td>'+
                   			'<td>' + listAct.Activity_Quantity +  '</td>'+
                   			'<td>' + listAct.Type_Name +  '</td>'+
                   			'<td>' + listAct.Faculty_Name +  '</td>'+
-                  			'<td><button class="btn btn-warning"   onclick="editActivity('+ listAct.Activity_ID + ')" >แก้ไข</button>  <button class="btn btn-danger"  onclick="delActivity('+ listAct.Activity_ID + ')">ลบ</button></td>'+
-
-                  			'</tr>');
+                  			'<td><button class="btn btn-warning"   onclick="editActivity('+ listAct.Activity_ID + ')" >แก้ไข</button>  <button class="btn btn-danger"  onclick="delActivity('+ listAct.Activity_ID + ')">ลบ</button></td></tr>');
                   		
-		             });
-			    });
-	        });
-		});
+				             });
+					    });
+				}
+
+
+				$(document).ready(function() {
+				$('input[type=radio][id=facultyCheck]').change(function() {
+   					
+   					var id = $(this).val();
+             	    console.log('faculty', id);
+
+             	    showFacultyActivity(id);
+             	   	
+			        });
+				});
 		      
 	</script>
 
@@ -88,20 +88,20 @@ if($_SESSION['status']=='User'){
 	<body>
 
 		<?php
-			include("css/nav.css");
+			require("css/nav.css");
 				
 			// deleted
-			include("connect.php");
+			require("connect.php");
 
 			if(isset($_GET['act'])){
-				$sql = ("delete FROM Activity WHERE Activity_ID='".$_GET["id"]."' ");
+				$sql ="DELETE FROM Activity WHERE Activity_ID='".$_GET['id']."'";
 			
-				if (mysql_query($sql) == TRUE) {
+				if ($conn->query($sql) == TRUE) {
 						echo "<div class='container'>";
 					    echo "ลบเรียบร้อย"."<br>";
 					    echo "<a href=ActList.php> กลับสู่หน้ากิจกรรม</a>";
 				} else {
-					    echo "Error deleting record: " . $conn->error;
+					    echo "Error deleting record: " or printf("ERROR: %s\n",$conn->error);
 					}
 
 						exit();
@@ -150,7 +150,7 @@ if($_SESSION['status']=='User'){
 		<?php
 			include("connect.php");
 			// $result = mysql_query("SELECT * FROM Activity");
-			$result = mysql_query("SELECT Activity_StartTime ,Activity_ID,Activity_Name,Activity_Detail,Activity_Date,Activity_Hour,Activity_Quantity,Type_Name,Faculty_Name FROM Activity 
+			$result = $conn->query("SELECT Activity_StartTime ,Activity_ID,Activity_Name,Activity_Detail,Activity_Date,Activity_Hour,Activity_Quantity,Type_Name,Faculty_Name FROM Activity 
 				INNER JOIN Faculty ON Activity.Faculty_ID = Faculty.Faculty_ID INNER JOIN Type ON Activity.Type_ID = Type.Type_ID ORDER by Activity_Date");
 
 			mysql_query("SET NAMES utf8");
@@ -158,16 +158,16 @@ if($_SESSION['status']=='User'){
 			// var_dump($result);
 			// exit();
 
-			while($row = mysql_fetch_array($result))
+			while($row = $result->fetch_assoc())
 				{?>
 				
 				<tr>
 
 
-					<td id='dtd'><? echo$row['Activity_Name'];?></td>
+					<td ><? echo$row['Activity_Name'];?></td>
 					<td ><? echo$row['Activity_Detail'];?></td>
-					<td ><? echo date('d M Y',strtotime($row['Activity_Date']));?></td>
-					<!-- <td ><? echo date('H.i',strtotime($row['Activity_StartTime']));?></td> -->
+					<td ><? echo date('d/m/y',strtotime($row['Activity_Date']));?></td>
+					<!-- <td ><? echo date('d m y',strtotime($row['Activity_StartTime']));?></td> -->
 					<td ><? echo$row['Activity_StartTime'].".00";?></td>
 					<td ><? echo$row['Activity_Hour']."  ชั่วโมง";?></td>
 					<td ><? echo$row['Activity_Quantity'];?></td>
@@ -188,7 +188,7 @@ if($_SESSION['status']=='User'){
 				</table>
 					
 				
-				<?mysql_close($conn);?>
+				<?$conn->close();?>
 				
 			</div>
 		</div>		

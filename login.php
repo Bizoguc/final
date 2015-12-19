@@ -11,7 +11,7 @@
 <body >
 
 <?php 
-	include 'connect.php';
+	include ('connect.php');
 	
 	if(isset($_POST['send']) != null){
 		$user = $_POST['user'];
@@ -21,9 +21,9 @@
 			echo "กรุณากรอกข้อมูล";
 		}else{ 
 			$sql = "SELECT * FROM Student where Student_Username ='".$user."' And Student_Password ='".$pass."'  ";
-			$query = mysql_query($sql);
-			$num = mysql_num_rows($query);
-			$row = mysql_fetch_array($query);
+			$query = $conn->query($sql);
+			$num = $query->num_rows;
+			$row = $query->fetch_array();
 					
 			if($row['Status'] == "1"){
 
@@ -35,21 +35,24 @@
 			if($num > 0){
 
 				$sql = "SELECT * FROM Student WHERE Student_Username = '".$user."' ";	
-				$query = mysql_query($sql);
-				$row = mysql_fetch_array($query);
-				
+				$query = $conn->query($sql);
+				$row = $query->fetch_array();
+
+				// var_dump($row['LogIn']);
 
 						if($row['LogIn'] == "1" ){
 							// mysql_query("DELETE FROM Login WHERE unix_timestamp( ) - Logtime > 60 ");
 							echo "มีการ Login ซ้ำ";
 						
 						}else{
-
+							$_SESSION['id'] = $row['Student_ID'];
 							$sql = "UPDATE Student SET LogIn='1',LogTime=now() WHERE Student_Username='".$user."'";
-							$query = mysql_query($sql);
+							$query = $conn->query($sql);
 								if($query){
 
 									$_SESSION['user'] = $user;
+									// var_dump($_SESSION['user']);
+									
 									header("Location: index.php");							
 								}
 						}

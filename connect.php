@@ -1,10 +1,12 @@
 <?php
-$conn = mysql_connect("localhost","root","");
-mysql_select_db("SAU");
+$conn = new mysqli("localhost","root","","SAU");
 
-mysql_query("SET character_set_results=utf8", $conn);
-if(!$conn) 
 
-	die('Could not connect:'.mysql_error());
 
+if($conn->connect_errno){
+
+	printf("Could not connect: %s\n", $conn->connect_error);
+}
+
+$conn->query("SET character_set_results=utf8");
 ?>

@@ -1,32 +1,32 @@
 <?php
-session_start(); ob_start();
+	session_start(); ob_start();
 
 
-if($_SESSION['status']=='User'){
-     header("Location: index.php");
-     exit;
-}else if($_SESSION['status']== null){
-	 header("Location: login.php");
-     exit;
-}
- 
+	if($_SESSION['status']=='User'){
+	     header("Location: index.php");
+	     exit;
+	}else if($_SESSION['status']== null){
+		 header("Location: login.php");
+	     exit;
+	}
+	 
 ?>
 
 
 
 <?php
 
-include("connect.php");
+	include("connect.php");
 
 
 
-$id = $_POST['activityId'];
+	$id = $_POST['activityId'];
 
 
-$sql = mysql_query("SELECT * FROM Activity WHERE Activity_ID='".$id."' ");
-$row = mysql_fetch_assoc($sql);
+	$resultActivity = $conn->query("SELECT * FROM Activity WHERE Activity_ID='".$id."' ");
+	$row = $resultActivity->fetch_assoc();
 
-echo json_encode($row);
+	echo json_encode($row);
 
 
 

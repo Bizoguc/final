@@ -1,5 +1,5 @@
 <?php
-	include('checkLogin.php');
+	require('checkAdminLogin.php');
 ?>
 
 <!DOCTYPE html>
@@ -46,20 +46,18 @@
 								<thead>
 								<tr>
 									 <th>ห้อง/เวลา</th>
-							         <th id='8'>08.00</th>
-							         <th id='9'>09.00</th>
-							         <th id='10'>10.00</th>
-							         <th id='11'>11.00</th>
-							         <th id='12'>12.00</th>
-							         <th id='13'>13.00</th>
-							         <th id='14'>14.00</th>
-							         <th id='15'>15.00</th>
-							         <th id='16'>16.00</th>
-							         <th id='17'>17.00</th>
-							         <th id='18'>18.00</th>
-							         <th id='19'>19.00</th>
-							         <th id='20'>20.00</th>
-								
+							         <th id='8'>08.00-09.00</th>
+							         <th id='9'>09.00-10.00</th>
+							         <th id='10'>10.00-11.00</th>
+							         <th id='11'>11.00-12.00</th>
+							         <th id='12'>12.00-13.00</th>
+							         <th id='13'>13.00-14.00</th>
+							         <th id='14'>14.00-15.00</th>
+							         <th id='15'>15.00-16.00</th>
+							         <th id='16'>16.00-17.00</th>
+							         <th id='17'>17.00-18.00</th>
+							         
+							       
 								</tr>
 								</thead>
 
@@ -67,8 +65,8 @@
 							<tbody>
 								<?php
 									include("connect.php");
-									$result = mysql_query("SELECT * FROM Room");
-									while($row = mysql_fetch_array($result))
+									$result = $conn->query("SELECT * FROM Room");
+									while($row = $result->fetch_array())
 								{?>
 
 								
@@ -82,26 +80,26 @@
 										    echo "<td id=activity-<?=$row['Room_ID']?>-".$i."</td>";
 										}**/
 
-										include("connect.php");
+										
 										//$timeResult = mysql_query("SELECT * FROM Time");
 										//while($timeRow = mysql_fetch_array($timeResult))
 											//ห้องและเวลา
 
 										
 										$times = array(
-											    "8" => "",
-											    "9" => "",
-											    "10" => "",
-											    "11" => "",
-											    "12" => "",
-											    "13" => "",
-											    "14" => "",
-											    "15" => "",
-											    "16" => "",
-											    "17" => "",
-											    "18" => "",
-											    "19" => "",
-											    "20" => "",
+											    "8" => "8-9",
+											    "9" => "9-10",
+											    "10" => "10-11",
+											    "11" => "11-12",
+											    "12" => "12-13",
+											    "13" => "13-14",
+											    "14" => "14-15",
+											    "15" => "15-16",
+											    "16" => "16-17",
+											    "17" => "17-18",
+											    
+											 
+											  
 											);
 										foreach ($times as $key => $value) 
 											//echo $value.'<br/>'.$key.'<br/>';

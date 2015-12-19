@@ -1,16 +1,7 @@
 <?php
-session_start(); ob_start();
-
-
-if($_SESSION['status']=='User'){
-     header("Location: index.php");
-     exit;
-}else if($_SESSION['status']== null){
-	 header("Location: login.php");
-     exit;
-}
- 
+ require 'checkAdminLogin.php';
 ?>
+
 
 
 <html>
@@ -20,6 +11,10 @@ if($_SESSION['status']=='User'){
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.js"></script>
 		<title> Edit : Activity</title>
+
+		<script type="text/javascript">
+			<? require('checkValidateTextbox.js') ?>
+		</script>
 	</head>
 
 
@@ -29,8 +24,8 @@ if($_SESSION['status']=='User'){
 			<?php
 			 	$id = $_GET['id'];
 				include("connect.php");
-				$sql = mysql_query("SELECT * FROM Activity INNER JOIN Type ON Activity.Type_ID = Type.Type_ID WHERE Activity_ID='".$_GET["id"]."' ");
-				$row = mysql_fetch_assoc($sql);
+				$result = $conn->query("SELECT * FROM Activity INNER JOIN Faculty ON Activity.Faculty_ID = Faculty.Faculty_ID INNER JOIN Type ON Activity.Type_ID = Type.Type_ID WHERE Activity_ID='".$_GET["id"]."' ");
+				$row = $result->fetch_assoc();
 				//var_dump($row);
 			?>
 
@@ -53,7 +48,7 @@ if($_SESSION['status']=='User'){
 
 									<div class="form-group">
 										<label>รายละเอียดกิจกรรม:</label>
-										<textarea class="form-control" name="Detail" row="5" cols="50"><?=$row['Activity_Detail']?></textarea>
+										<textarea class="form-control" name="Detail" id="Detail" row="5" maxlength="80" cols="50"><?=$row['Activity_Detail']?></textarea>
 									</div>
 
 									<div class="form-group">	
@@ -63,33 +58,43 @@ if($_SESSION['status']=='User'){
 									
 									<div class="form-group">
 										<label>ชั่วโมงที่ร่วมกิจกรรม:</label>
-										<input class="form-control" name="Hour" type="text"  id="Hour" value="<?=$row['Activity_Hour']?>"/>
+										<!-- <input class="form-control" name="Hour" type="text"  id="Hour" value="<?=$row['Activity_Hour']?>"/> -->
+											<select class="form-control" name="Hour" id="Hour">
+												<option value="<?=$row['Activity_Hour']?>"><?=$row['Activity_Hour']?>ชั่วโมง (ข้อมูลเก่า)</option>
+												<option value="1">1 ชั่วโมง</option>
+												<option value="2">2 ชั่วโมง</option>
+												<option value="3">3 ชั่วโมง</option>
+												<option value="4">4 ชั่วโมง</option>
+												<option value="4">5 ชั่วโมง</option>
+												
+
+											</select>
 									</div>
 
 									<div class="form-group">
 										<label>จำนวนที่รับ:</label>
-										<input class="form-control" name="Quan" type="text" id="Quan" value="<?=$row['Activity_Quantity']?>"/>
+										<input class="form-control" name="Quan" maxlenght="2" type="number" id="Quan" value="<?=$row['Activity_Quantity']?>"/>
 									</div>
 
 									<div class="form-group">
 										<label>ประเภทกิจกรรม:</label>   
 												<select class="form-control" name="typeActivity" id="typeActivity">
-												 <option value='<?=$row['Type_ID']?>'><?echo$row['Type_Name']?>(ข้อมูลเดิม)</option>
+												 <option value='<?=$row['Type_ID']?>'><?echo$row['Type_Name']?> (ข้อมูลเก่า)</option>
 											        <?php
 
 											        $sql = "SELECT * from Type";
-											        $query = mysql_query($sql)or die ("Error in query: . ".mysql_error()); //query ข้อมูล
+											        $query = $conn->query($sql)or printf("ERROR : %s\n",$conn->error); //query ข้อมูล
 											        
-											          while($row = mysql_fetch_assoc($query)){
-											          echo "<option value='" . $row['Type_ID'] . "'>" .$row['Type_Name'] ."</option>";
+											          while($rowType = $query->fetch_assoc()){
+											          echo "<option value='" . $rowType['Type_ID'] . "'>" .$rowType['Type_Name'] ."</option>";
 											        }?>
 								  				 </select>
 								  	</div>
 
 								  	<div class="form-group">
 										<label>เริ่มจัดกิจกรรม</label>
-										  <select class="form-control" name="Time" id="Time">
-											     <option value=''>-เลือกเวลาเริ่มใหม่-</option>
+										  <select class="form-control" name="startActivity" id="startActivity">
+											     <option value='<?=$row['Activity_StartTime']?>'><?=$row['Activity_StartTime']?>.00 (ข้อมูลเก่า)</option>
 										
 								             <option value='8'>08:00</option>
 								             <option value='9'>09:00</option>
@@ -102,28 +107,26 @@ if($_SESSION['status']=='User'){
 								             <option value='16'>16:00</option>
 								             <option value='17'>17:00</option>
 								             <option value='18'>18:00</option>
-								             <option value='19'>19:00</option>
-								             <option value='20'>20:00</option>   
-								         </select> 
+								          </select>
 									</div>
 
 									<div class="form-group">
 								  		<label>จัดเฉพาะคณะ</label>
 								  				<select class="form-control" name="facultyActivity" id="facultyActivity">
-								  					<option value=''>-เลือกคณะใหม่-</option>
+								  					<option value="<?=$row['Faculty_ID']?>"><?echo$row['Faculty_Name']?> (ข้อมูลเก่า)</option>
 								  						<?php
 								  							$sql="SELECT * FROM Faculty";
-								  							$query= mysql_query($sql) or die("Error in query: . ".mysql_error());
-								  								while ($row = mysql_fetch_assoc($query)) {
-								  									echo "<option value='". $row['Faculty_ID'] ."'>" .$row['Faculty_Name']."</option>";
-								  								}
+								  							$query= $conn->query($sql) or printf("Error in query: %s\n",$conn->error);
+								  								while ($rowFaculty = $query->fetch_assoc()) {
 
 								  						?>
+								  								<option value="<?=$rowFaculty['Faculty_ID']?>"><?=$rowFaculty['Faculty_Name']?></option>;
+								  						<?php } ?>
 								  				</select>
 								  	</div>
 							  		
 
-									<input type="Submit" value="ยืนยัน" class="btn btn-success"/> <input type="Reset" value="คืนค่า" class="btn btn-danger">
+									<input type="Submit" id="sendActivity" value="ยืนยัน" class="btn btn-success"/> <input type="Reset" value="คืนค่า" class="btn btn-danger">
 								</form>
 								
 							</div>
@@ -151,5 +154,5 @@ if($_SESSION['status']=='User'){
 					</div>		
 	</div>
 		
-
+<? $conn->close() ?>
 </body>

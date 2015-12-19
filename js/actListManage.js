@@ -36,41 +36,44 @@
             $('table').find('td').each(function(index, value){
                 var $td = $(this);
                 $td.show();
-                //$td.css({'background-color': 'red'});
+                // $td.css({'background-color': 'red'});
             });
 
 
             $.each(dateShowTime, function( index, showTime ) {
                 
-
-                //console.log(showTime);
+            var endTimeID = parseInt(showTime.EndTimeID) - 1;
+                console.log(endTimeID);
 
                 var $tdStartTime = $('#activity-' + showTime.Room_ID + '-' + showTime.StartTimeID);
-                var $tdEndTime =  $('#activity-' + showTime.Room_ID + '-' + showTime.EndTimeID);
+                var $tdEndTime =  $('#activity-' + showTime.Room_ID + '-' + endTimeID);
                 
                 console.log($tdStartTime.index(), $tdEndTime.index());
 
                   $tdStartTime.html('<a id="showtime-'+ showTime.Showtime_ID +  '"href=javascript:void(0) onclick="delShowTime(' + showTime.Showtime_ID + ') ;return false;">' + ' ' + showTime.Activity_Name +'(ลบ)</a>');
-                  $tdEndTime.html(showTime.Activity_Name);
+                  // $tdEndTime.html(showTime.Activity_Name);
 
 
                   var diff =  $tdEndTime.index() + 1  - $tdStartTime.index() ;
                           console.log(showTime.Activity_Name);
                           console.log('StartTime Index: ', $tdStartTime.index());
                           console.log('EndTime Index: ', $tdEndTime.index());
-                          
+                 
+
+                   $tdStartTime.attr('colspan', diff);
+        
+
 
                 for (i = $tdStartTime.index() + 1; i <= $tdEndTime.index(); i++) {
                     var $tr = $tdStartTime.parent();
                     var $td = $tr.find('td:eq(' + i + ')')
-                    
+                    // console.log($td);
                     $td.hide();
                 }
 
 
 
-                    $tdStartTime.attr('colspan', diff);
-
+                   
                   // console.log($tdStartTime.index(), $tdEndTime.index())
 
      
