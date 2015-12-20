@@ -46,10 +46,17 @@ if($_SESSION['status']== null){
  					console.log(dataShowTime,'a')
 
  					  $.each(dataShowTime, function( index, showTime ) {
- 					 
+ 					  
+ 								  var d = new Date(showTime.DateShowtime);  //timestamp
+								  var day = d.getDate();//day
+								  var month = d.getMonth()+1;   //month
+								  var year = d.getFullYear();   //year
+								  var dateShow = day + "/" + month + "/" + year;
+					    		  
+					    		  console.log(dateShow);
 
 
- 					  	$('.dateContent').append(showTime.DateShowtime+"<br>");
+ 					  	$('.dateContent').append(dateShow+"<br>");
  					  	$('.roomContent').append(showTime.room_name+"<br>");
  					  	$('.timeContent').append("<a href=javascript:void(0) onclick=registerSeat('" + showTime.Showtime_ID + "')>" + showTime.StartTimeID + '.00' + ' - '+ showTime.EndTimeID + '.00' + "</a>"+"<br>");
  					 	// $('.timeContent').append("<a href=javascript:void(0)>" + showTime.StartTimeID + '.00' + "</a>"+"<br>");
